@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lotus & Oil — Sanctuary & Holistic Wellness</title>
+<title>Lotus & Oil — Luxury Wellness at Your Home, Hotel & Condominium</title>
+<meta name="description" content="Lotus & Oil delivers bespoke massage, facial and body rituals to your residence, hotel suite or condominium across Metro Manila, available around the clock.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 
   :root {
     --void: #0b120d;
     --deep: #101c14;
-    --panel: rgba(243, 238, 224, 0.05);
-    --panel-hover: rgba(243, 238, 224, 0.09);
+    --panel: rgba(12, 21, 15, 0.52);
+    --panel-hover: rgba(12, 21, 15, 0.64);
     --panel-border: rgba(224, 201, 155, 0.16);
     --hairline: rgba(224, 201, 155, 0.14);
     --cream: #f4efe3;
-    --cream-muted: rgba(244, 239, 227, 0.62);
-    --cream-faint: rgba(244, 239, 227, 0.38);
+    --cream-muted: rgba(244, 239, 227, 0.86);
+    --cream-faint: rgba(244, 239, 227, 0.68);
     --gold: #c9a869;
     --gold-bright: #e6cd97;
     --shadow-soft: 0 20px 50px rgba(3, 8, 5, 0.35);
@@ -35,19 +37,22 @@
     margin: 0;
     font-family: 'Inter', sans-serif;
     background-color: var(--void);
-    background-image:
-      radial-gradient(circle at 18% 8%, rgba(201, 168, 105, 0.10), transparent 32%),
-      radial-gradient(circle at 85% 78%, rgba(60, 110, 78, 0.22), transparent 38%),
-      linear-gradient(180deg, rgba(11, 18, 13, 0.88), rgba(11, 18, 13, 0.96)),
-      url("images/lotus-oil-blend-background.jpg");
-    background-position: center, center, center, center;
-    background-size: cover, cover, cover, cover;
-    background-attachment: fixed, fixed, fixed, fixed;
-    background-repeat: no-repeat;
     color: var(--cream);
     line-height: 1.7;
     letter-spacing: -0.005em;
     overflow-x: hidden;
+  }
+
+  /* Fixed wallpaper (a pseudo-element so it also works on iOS/mobile).
+     The overlay is light on purpose so the picture stays visible. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(11, 18, 13, 0.38), rgba(11, 18, 13, 0.56)),
+      url("images/lotus-oil-blend-background.jpg") center / cover no-repeat;
   }
 
   h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 400; margin: 0 0 0.4em; color: var(--cream); }
@@ -76,21 +81,21 @@
     width: 92%;
     max-width: 1240px;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     align-items: center;
     gap: 20px;
     padding: 14px 26px;
-    background: rgba(15, 24, 17, 0.62);
-    backdrop-filter: blur(18px);
+    background: rgba(15, 24, 17, 0.42);
+    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(18px);
     border: 1px solid var(--panel-border);
     border-radius: 100px;
     box-shadow: 0 18px 40px rgba(2, 6, 4, 0.35);
     transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease);
   }
-  header.scrolled { background: rgba(11, 18, 13, 0.86); box-shadow: 0 18px 40px rgba(2, 6, 4, 0.5); }
+  header.scrolled { background: rgba(11, 18, 13, 0.62); box-shadow: 0 18px 40px rgba(2, 6, 4, 0.5); }
 
-  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
   .logo svg { width: 20px; height: 20px; flex-shrink: 0; }
   .logo-text {
     font-family: 'Playfair Display', serif;
@@ -98,9 +103,10 @@
     letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--cream);
+    white-space: nowrap;
   }
 
-  nav { display: flex; justify-content: center; gap: 30px; }
+  nav { display: flex; justify-content: flex-end; gap: 30px; }
   nav a {
     text-decoration: none;
     color: var(--cream-muted);
@@ -143,6 +149,7 @@
     text-transform: uppercase;
     transition: var(--ease) 0.4s;
     backdrop-filter: blur(6px);
+    white-space: nowrap;
   }
   .btn-outline:hover { background: rgba(244, 239, 227, 0.1); border-color: var(--gold-bright); color: var(--gold-bright); }
 
@@ -154,7 +161,7 @@
     max-height: 980px;
     width: 100%;
     overflow: hidden;
-    background: #060a07;
+    background: transparent;
   }
 
   .hc-slide {
@@ -171,7 +178,8 @@
     inset: -3%;
     background-size: cover;
     background-position: center;
-    filter: blur(38px) brightness(0.42) saturate(1.05);
+    filter: blur(38px) brightness(0.5) saturate(1.05);
+    opacity: 0.6;
     transform: scale(1.08);
   }
 
@@ -255,6 +263,7 @@
   .hc-arrow.next { right: 22px; }
   .hc-arrow svg { width: 16px; height: 16px; }
 
+  .hc-arrow, .hc-controls { display: none; }
   .hero-cta-row {
     position: absolute;
     z-index: 6;
@@ -284,31 +293,32 @@
     z-index: 5;
     border-top: 1px solid var(--hairline);
     border-bottom: 1px solid var(--hairline);
-    padding: 34px 8%;
-    background: rgba(16, 28, 20, 0.55);
-    backdrop-filter: blur(14px);
+    padding: 26px 5%;
+    background: rgba(16, 28, 20, 0.34);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .feature-grid {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
+    gap: 24px;
     text-align: center;
   }
   .feature-item h4 { font-size: 1.05rem; margin-bottom: 6px; font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: 0.2px; }
   .feature-item p { font-size: 0.75rem; color: var(--cream-faint); margin: 0; text-transform: uppercase; letter-spacing: 1.4px; }
 
   /* Section shells */
-  .section-title-wrap { text-align: center; max-width: 640px; margin: 0 auto 64px; }
+  .section-title-wrap { text-align: center; max-width: 640px; margin: 0 auto 38px; }
   .section-title-wrap h2 { font-size: clamp(2.3rem, 4vw, 3.1rem); }
   .section-title-wrap p { color: var(--cream-muted); font-weight: 300; font-size: 1rem; }
 
-  .services-section { padding: 130px 8% 90px; max-width: 1400px; margin: 0 auto; }
+  .services-section { padding: 80px 5% 60px; max-width: 1400px; margin: 0 auto; }
 
   .category-title {
     font-size: 1.9rem;
-    margin: 74px 0 32px;
+    margin: 46px 0 22px;
     display: flex;
     align-items: baseline;
     gap: 18px;
@@ -324,8 +334,8 @@
 
   .treatment-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
   }
 
   .treatment-card {
@@ -342,20 +352,145 @@
   }
   .treatment-card:hover { background: var(--panel-hover); transform: translateY(-6px); border-color: rgba(224, 201, 155, 0.35); }
 
-  .card-img-box { width: 100%; height: 220px; overflow: hidden; background: #0e1912; }
-  .card-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
-  .treatment-card:hover .card-img-box img { transform: scale(1.06); }
+  .card-img-box { width: 100%; overflow: hidden; background: rgba(14, 25, 18, 0.4); line-height: 0; }
+  .card-img-box img { display: block; width: 100%; height: auto; object-fit: contain; transition: transform 1s var(--ease); }
+  .treatment-card:hover .card-img-box img { transform: scale(1.02); }
 
-  .card-content { padding: 26px 28px 28px; display: flex; flex-direction: column; flex-grow: 1; }
-  .card-content h3 { font-size: 1.32rem; margin-bottom: 10px; }
-  .card-content p { color: var(--cream-muted); font-size: 0.86rem; font-weight: 300; margin-bottom: 22px; flex-grow: 1; }
+  .card-content { padding: 20px 22px 22px; display: flex; flex-direction: column; flex-grow: 1; }
+  .card-content h3 { font-size: 1.28rem; margin-bottom: 8px; }
+  .card-content p { color: var(--cream-muted); font-size: 0.86rem; font-weight: 300; margin-bottom: 14px; flex-grow: 1; }
 
-  .card-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--hairline); }
+  .card-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--hairline); }
   .price { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold-bright); }
   .duration { font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cream-faint); font-weight: 600; }
 
+
+  /* ---------- Service Area map ---------- */
+  .area-section { padding: 70px 5% 60px; max-width: 1100px; margin: 0 auto; }
+  .area-tabs { display: flex; justify-content: center; gap: 8px; margin: 0 0 18px; }
+  .area-tabs button {
+    font: inherit; font-size: .72rem; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 500; cursor: pointer;
+    color: var(--cream-muted); background: var(--panel); border: 1px solid var(--panel-border); border-radius: 100px; padding: 10px 22px; min-height: 42px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    transition: background-color .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease);
+  }
+  .area-tabs button:hover { color: var(--gold-bright); border-color: rgba(224, 201, 155, 0.4); }
+  .area-tabs button[aria-selected="true"] { background: rgba(201, 168, 105, 0.22); border-color: var(--gold); color: var(--gold-bright); }
+  .area-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 640px) { .area-grid { grid-template-columns: repeat(5, 1fr); } }
+  .area-grid button {
+    font: inherit; font-size: 0.82rem; color: var(--cream); cursor: pointer; min-height: 46px; padding: 10px 8px;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    transition: background-color .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), transform .2s var(--ease);
+  }
+  .area-grid button:hover { background: var(--panel-hover); border-color: rgba(224, 201, 155, 0.4); }
+  .area-grid button:active { transform: scale(.97); }
+  .area-grid button[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #0b120d; font-weight: 600; animation: chipPop .45s cubic-bezier(.34, 1.56, .64, 1); }
+  @keyframes chipPop { 0% { transform: scale(.92); } 100% { transform: scale(1); } }
+  .map-wrap { margin-top: 18px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--panel-border); box-shadow: var(--shadow-deep); background: var(--panel); }
+  #coverageMap { width: 100%; height: 380px; background: #e8e4da; }
+  @media (min-width: 640px) { #coverageMap { height: 460px; } }
+  .leaflet-container { font: inherit; }
+  .cov-poly { stroke-linejoin: round; stroke-dasharray: 14 9; animation: covMarch 1.2s linear infinite, covPulse 2.4s ease-in-out infinite; }
+  @keyframes covMarch { to { stroke-dashoffset: -23; } }
+  @keyframes covPulse { 0%, 100% { fill-opacity: .10; } 50% { fill-opacity: .26; } }
+  .cov-pulse { background: none; border: 0; }
+  .cov-pulse i { position: relative; display: block; width: 18px; height: 18px; border-radius: 50%; background: #d7263d; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.45); }
+  .cov-pulse i::after { content: ""; position: absolute; inset: -12px; border-radius: 50%; border: 2px solid #d7263d; animation: covRing 1.8s ease-out infinite; }
+  @keyframes covRing { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+  .cov-tip { background: #d7263d; color: #fff; border: 0; border-radius: 99px; padding: 3px 10px; font-weight: 600; font-size: .75rem; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+  .cov-tip::before { display: none; }
+  .map-label { margin: 16px 0 0; text-align: center; color: var(--cream-muted); font-size: .9rem; font-weight: 300; transition: opacity .3s; }
+  .map-label a { color: var(--gold-bright); text-decoration: none; border-bottom: 1px solid rgba(230, 205, 151, .4); }
+  .area-note { margin: 18px auto 0; max-width: 620px; text-align: center; color: var(--cream-faint); font-size: .85rem; font-weight: 300; }
+  @media (prefers-reduced-motion: reduce) { .cov-poly, .cov-pulse i::after, .area-grid button[aria-pressed="true"] { animation: none !important; } }
+
+  /* ---------- Add-ons inside massage cards ---------- */
+  .addons { margin: 0 0 20px; border: 1px solid var(--panel-border); border-radius: var(--radius-lg); background: rgba(9, 14, 10, 0.30); overflow: hidden; }
+  .addons summary { cursor: pointer; list-style: none; padding: 12px 16px; min-height: 46px; display: flex; align-items: center; gap: 10px; font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--gold); }
+  .addons summary::-webkit-details-marker { display: none; }
+  .addons summary::after { content: "+"; margin-left: auto; font-size: 1.3rem; line-height: 1; letter-spacing: 0; color: var(--gold-bright); transition: transform .35s var(--ease); }
+  .addons[open] summary::after { transform: rotate(45deg); }
+  .addons summary em { font-style: normal; letter-spacing: 1px; color: var(--cream-muted); text-transform: none; font-weight: 400; font-size: .78rem; }
+  .addon-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 0 10px 12px; }
+  .addon {
+    box-sizing: border-box; min-width: 0; width: 100%; min-height: 52px; font: inherit; color: var(--cream); text-align: left; cursor: pointer;
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--radius-lg);
+    transition: background-color .3s var(--ease), border-color .3s var(--ease);
+  }
+  .addon:hover { border-color: rgba(224, 201, 155, 0.4); }
+  .addon-check { flex: none; width: 22px; height: 22px; border-radius: var(--radius-lg); border: 1.5px solid var(--gold); display: grid; place-items: center; color: transparent; font-size: .8rem; font-weight: 700; transition: background-color .25s, color .25s; }
+  .addon-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .addon-info b { font-weight: 500; font-size: .9rem; }
+  .addon-info small { color: var(--cream-faint); font-size: .75rem; font-weight: 300; }
+  .addon-price { flex: none; padding-left: 4px; font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--gold-bright); }
+  .addon[aria-pressed="true"] { background: rgba(201, 168, 105, 0.14); border-color: var(--gold); }
+  .addon[aria-pressed="true"] .addon-check { background: var(--gold); color: #0b120d; }
+  /* Duration selector */
+  .dur-row { margin: 0 0 14px; }
+  .dur-row > span { display: block; margin-bottom: 8px; font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--gold); }
+  .dur-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .dur-opts button {
+    font: inherit; font-size: .8rem; color: var(--cream); cursor: pointer; min-height: 44px; padding: 8px 6px;
+    background: rgba(9, 14, 10, 0.35); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    transition: background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease);
+  }
+  .dur-opts button:hover { border-color: rgba(224, 201, 155, 0.5); }
+  .dur-opts button[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #0b120d; font-weight: 600; }
+
+  /* Guests stepper + live total + Book button */
+  .guest-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+  .guest-row > span { font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--gold); }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--panel-border); border-radius: 100px; background: rgba(9, 14, 10, 0.35); }
+  .stepper button { width: 40px; height: 40px; border: 0; background: none; color: var(--cream); font-size: 1.2rem; line-height: 1; cursor: pointer; border-radius: 50%; transition: color .3s var(--ease), background-color .3s var(--ease); }
+  .stepper button:hover:not(:disabled) { color: var(--gold-bright); background: rgba(201, 168, 105, 0.16); }
+  .stepper button:disabled { opacity: .35; cursor: default; }
+  .stepper output { min-width: 28px; text-align: center; font-weight: 500; }
+  .svc-total { margin: 0 0 16px; padding: 12px 14px; border-radius: var(--radius-lg); background: rgba(201, 168, 105, 0.10); border: 1px solid rgba(201, 168, 105, 0.28); font-size: .8rem; color: var(--cream-muted); font-weight: 300; line-height: 1.5; }
+  .svc-total b { display: block; font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; color: var(--gold-bright); }
+  .btn-book {
+    margin-top: 16px; width: 100%; min-height: 48px; border: 0; cursor: pointer; border-radius: 100px;
+    background: linear-gradient(135deg, var(--gold), #a9895a); color: #17190f;
+    font: inherit; font-size: .74rem; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase;
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  }
+  .btn-book:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(201, 168, 105, 0.3); }
+
+  /* Booking dialog */
+  dialog.book-dialog {
+    width: min(540px, calc(100% - 24px)); max-height: calc(100% - 24px); padding: 0; overflow: auto;
+    color: var(--cream); background: rgba(12, 21, 15, 0.96); border: 1px solid var(--panel-border); border-radius: 14px; box-shadow: var(--shadow-deep);
+  }
+  dialog.book-dialog::backdrop { background: rgba(3, 8, 5, 0.65); backdrop-filter: blur(4px); }
+  .bk-inner { padding: 30px 28px 26px; color-scheme: dark; }
+  .bk-inner h3 { font-size: 1.6rem; margin-bottom: 4px; }
+  .bk-sub { margin: 0 0 18px; color: var(--cream-muted); font-size: .85rem; font-weight: 300; }
+  .bk-summary { list-style: none; margin: 0 0 18px; padding: 14px 16px; border: 1px solid var(--panel-border); border-radius: var(--radius-lg); background: rgba(243, 238, 224, 0.04); font-size: .88rem; }
+  .bk-summary li { display: flex; justify-content: space-between; gap: 14px; padding: 5px 0; color: var(--cream-muted); }
+  .bk-summary li b { font-weight: 500; color: var(--cream); white-space: nowrap; }
+  .bk-summary li.bk-total { margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--hairline); color: var(--cream); font-weight: 500; }
+  .bk-summary li.bk-total b { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; color: var(--gold-bright); }
+  .bk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bk-grid .full { grid-column: 1 / -1; }
+  .bk-inner label { display: flex; flex-direction: column; gap: 6px; font-size: .68rem; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600; color: var(--gold); }
+  .bk-inner input, .bk-inner select, .bk-inner textarea {
+    font: inherit; font-size: .92rem; letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--cream);
+    min-height: 46px; padding: 10px 14px; background: rgba(243, 238, 224, 0.06); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+  }
+  .bk-inner textarea { resize: vertical; min-height: 70px; }
+  .bk-inner input:focus, .bk-inner select:focus, .bk-inner textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .bk-inner select option { background: #101c14; color: var(--cream); }
+  .bk-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .bk-actions .btn-book { margin-top: 0; flex: 1; }
+  .bk-cancel { flex: 0 0 auto; padding: 0 22px; min-height: 48px; border-radius: 100px; cursor: pointer; background: none; color: var(--cream); border: 1px solid rgba(244, 239, 227, 0.35); font: inherit; font-size: .72rem; letter-spacing: 1.4px; text-transform: uppercase; font-weight: 500; }
+  .bk-cancel:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
+  .bk-note { margin: 14px 0 0; font-size: .75rem; color: var(--cream-faint); text-align: center; }
+  @media (max-width: 520px) { .bk-grid { grid-template-columns: 1fr; } .bk-inner { padding: 24px 18px 20px; } }
+
   /* Sanctuary showcase (the two branded menu panels) */
-  .showcase-section { padding: 110px 8%; background: rgba(16, 28, 20, 0.45); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+  .showcase-section { padding: 70px 5%; background: rgba(16, 28, 20, 0.28); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
   .showcase-grid { max-width: 1240px; margin: 60px auto 0; display: flex; flex-direction: column; gap: 40px; }
   .showcase-panel {
     position: relative;
@@ -367,21 +502,113 @@
   .showcase-panel img { display: block; width: 100%; height: auto; transition: transform 1.2s var(--ease); }
   .showcase-panel:hover img { transform: scale(1.015); }
 
+  .section-title-wrap h2, .section-title-wrap p, .category-title, .map-label, .area-note { text-shadow: 0 1px 10px rgba(3, 8, 5, 0.6); }
+  .section-title-wrap {
+    padding: 30px 26px; background: rgba(12, 21, 15, 0.50); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .section-title-wrap h2 { margin-bottom: 12px; }
+  .section-title-wrap p { margin: 0; }
+  .category-title {
+    padding: 12px 22px; background: rgba(12, 21, 15, 0.50); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .map-label, .area-note {
+    padding: 14px 20px; background: rgba(12, 21, 15, 0.55); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .map-label { color: var(--cream); }
+  .area-note { color: var(--cream-muted); }
+
+  /* ---------- Social links ---------- */
+  .social-row { display: flex; gap: 10px; margin-top: 22px; }
+  .social-link {
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+    color: var(--cream); background: var(--panel); border: 1px solid var(--panel-border);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: transform .35s var(--ease), background-color .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease);
+  }
+  .social-link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .social-link:hover, .social-link:focus-visible { transform: translateY(-3px); background: rgba(201, 168, 105, 0.22); border-color: var(--gold); color: var(--gold-bright); }
+
+  /* ---------- Testimonials carousel ---------- */
+  .reviews-section { padding: 70px 5% 60px; max-width: 980px; margin: 0 auto; }
+  .t-carousel { position: relative; --t-dur: 7000ms; }
+  .t-viewport { overflow: hidden; border-radius: var(--radius-lg); touch-action: pan-y; outline: none; }
+  .t-viewport:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+  .t-track { display: flex; transition: transform 0.95s var(--ease); will-change: transform; }
+  .t-slide { flex: 0 0 100%; min-width: 0; padding: 4px; }
+  .t-card {
+    position: relative; text-align: center; padding: 46px 32px 34px;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--shadow-soft);
+    opacity: .35; transform: scale(.96); transition: opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .t-slide.is-active .t-card { opacity: 1; transform: scale(1); }
+  .t-card::before {
+    content: "\201C"; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    font-family: 'Playfair Display', serif; font-size: 5rem; line-height: 1; color: var(--gold); opacity: .35;
+  }
+  .t-stars { display: flex; justify-content: center; gap: 5px; margin-bottom: 22px; color: var(--gold-bright); }
+  .t-stars svg { width: 17px; height: 17px; fill: currentColor; }
+  .t-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.2rem, 2.4vw, 1.6rem); line-height: 1.55; margin: 0 0 26px; color: var(--cream); }
+  .t-author { font-size: .74rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--cream); }
+  .t-meta { margin-top: 4px; font-size: .72rem; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); }
+
+  /* staggered entrance for the active slide */
+  .t-slide.is-active .t-stars svg { animation: tStar .6s var(--ease) both; }
+  .t-slide.is-active .t-stars svg:nth-child(2) { animation-delay: .08s; }
+  .t-slide.is-active .t-stars svg:nth-child(3) { animation-delay: .16s; }
+  .t-slide.is-active .t-stars svg:nth-child(4) { animation-delay: .24s; }
+  .t-slide.is-active .t-stars svg:nth-child(5) { animation-delay: .32s; }
+  .t-slide.is-active .t-text   { animation: tRise .9s var(--ease) .25s both; }
+  .t-slide.is-active .t-author { animation: tRise .9s var(--ease) .45s both; }
+  .t-slide.is-active .t-meta   { animation: tRise .9s var(--ease) .55s both; }
+  @keyframes tStar { from { opacity: 0; transform: scale(.2) rotate(-35deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+  @keyframes tRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+  .t-controls { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 26px; }
+  .t-arrow {
+    width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+    color: var(--cream); background: var(--panel); border: 1px solid var(--panel-border);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: background-color .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), transform .2s var(--ease);
+  }
+  .t-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .t-arrow:hover { background: rgba(201, 168, 105, 0.22); border-color: var(--gold); color: var(--gold-bright); }
+  .t-arrow:active { transform: scale(.94); }
+  .t-dots { display: flex; gap: 10px; align-items: center; }
+  .t-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: rgba(244, 239, 227, 0.4); transition: width .45s var(--ease), background-color .45s var(--ease); position: relative; }
+  .t-dot::before { content: ""; position: absolute; inset: -10px -4px; }
+  .t-dot.active { width: 28px; border-radius: 5px; background: var(--gold-bright); }
+  .t-progress { height: 2px; margin: 22px auto 0; max-width: 220px; background: rgba(244, 239, 227, 0.18); border-radius: 2px; overflow: hidden; }
+  .t-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+  .t-progress i.run { animation: tProg var(--t-dur) linear forwards; }
+  .t-carousel.paused .t-progress i { animation-play-state: paused; }
+  @keyframes tProg { from { width: 0; } to { width: 100%; } }
+  @media (max-width: 640px) { .t-card { padding: 44px 20px 28px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .t-track, .t-card { transition: none; }
+    .t-slide.is-active .t-stars svg, .t-slide.is-active .t-text, .t-slide.is-active .t-author, .t-slide.is-active .t-meta { animation: none; }
+    .t-progress { display: none; }
+  }
+
   /* Editorial Quote */
-  .quote-section { padding: 130px 8%; text-align: center; max-width: 900px; margin: 0 auto; }
-  .quote-box { background: var(--panel); backdrop-filter: blur(14px); padding: 60px 44px; border-radius: var(--radius-lg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-soft); }
+  .quote-section { padding: 70px 5%; text-align: center; max-width: 900px; margin: 0 auto; }
+  .quote-box { background: var(--panel); backdrop-filter: blur(14px); padding: 44px 30px; border-radius: var(--radius-lg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-soft); }
   .quote-mark { font-family: 'Playfair Display', serif; font-size: 3.6rem; color: var(--gold); line-height: 0; display: block; margin-bottom: 20px; }
   .quote-body { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.1rem); font-style: italic; margin-bottom: 22px; line-height: 1.4; color: var(--cream); }
   .quote-author { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-faint); font-weight: 500; }
 
   /* Footer */
-  footer { position: relative; z-index: 5; border-top: 1px solid var(--hairline); padding: 90px 8% 40px; background: rgba(9, 14, 10, 0.75); backdrop-filter: blur(16px); }
-  .footer-grid { max-width: 1200px; margin: 0 auto 70px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; }
+  footer { position: relative; z-index: 5; border-top: 1px solid var(--hairline); padding: 60px 5% 30px; background: rgba(9, 14, 10, 0.50); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .footer-grid { max-width: 1200px; margin: 0 auto 44px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 36px; }
   .footer-col h4 { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 22px; font-weight: 600; }
   .footer-brand { display: flex; align-items: flex-start; gap: 12px; }
   .footer-brand svg { width: 26px; height: 26px; flex-shrink: 0; margin-top: 4px; }
   .footer-brand h3 { font-size: 1.6rem; margin-bottom: 14px; }
   .footer-brand p { color: var(--cream-muted); font-size: 0.88rem; font-weight: 300; max-width: 280px; margin: 0; }
+  .footer-brand .social-row { margin-top: 22px; }
   .footer-links { list-style: none; padding: 0; margin: 0; }
   .footer-links li { margin-bottom: 12px; }
   .footer-links a { text-decoration: none; color: var(--cream-muted); font-size: 0.88rem; font-weight: 300; transition: color 0.35s var(--ease); }
@@ -398,20 +625,27 @@
   }
 
   @media (max-width: 960px) {
-    header { grid-template-columns: auto auto; justify-content: space-between; top: 14px; width: 94%; padding: 12px 18px; }
+    header { grid-template-columns: auto; justify-content: center; top: 14px; width: 94%; padding: 12px 18px; }
     nav { display: none; }
     .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
     .hc-figure { padding: 100px 5% 90px; }
   }
 
   @media (max-width: 640px) {
+    header { gap: 10px; padding: 10px 14px; }
+    .logo { gap: 8px; }
+    .logo svg { width: 18px; height: 18px; }
+    .logo-text { font-size: 0.98rem; letter-spacing: 1.6px; }
+    .btn-reserve { padding: 9px 16px; font-size: 0.66rem; letter-spacing: 1px; }
+    .btn-outline { padding: 12px 24px; font-size: 0.7rem; letter-spacing: 1.2px; }
+    .section-title-wrap { padding: 24px 18px; }
+    .category-title { font-size: 1.5rem; padding: 10px 16px; }
     .hero-carousel { height: 92vh; min-height: 560px; }
     .hero-cta-row { bottom: 72px; flex-direction: column; align-items: center; }
     .hc-arrow { width: 38px; height: 38px; }
     .footer-grid { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
     .treatment-grid { grid-template-columns: 1fr; }
-    .card-img-box { height: auto; aspect-ratio: 4 / 3; }
   }
 
 </style>
@@ -431,13 +665,12 @@
       <span class="logo-text">Lotus &amp; Oil</span>
     </a>
     <nav>
-      <a href="#massages">Massages</a>
+      <a href="#massages">Massage</a>
       <a href="#facials">Facials</a>
-      <a href="#body">Body Work</a>
-      <a href="#thermal">Hydrotherapy</a>
-      <a href="#sanctuary">Sanctuary</a>
+      <a href="#body">Body Rituals</a>
+      <a href="#areas">Coverage</a>
+      <a href="#reviews">Reviews</a>
     </nav>
-    <a href="#reserve" class="btn-reserve">Reserve</a>
   </header>
 
   <!-- Hero Carousel -->
@@ -445,25 +678,16 @@
 
     <div class="hc-slide active" data-index="0">
       <div class="hc-backdrop" style="background-image:url('images/lotus-sanctuary-hero.png');"></div>
-      <div class="hc-figure"><img src="images/lotus-sanctuary-hero.png" alt="Lotus & Oil — Welcome to the Sanctuary"></div>
+      <div class="hc-figure"><img src="images/lotus-sanctuary-hero.png" alt="Lotus & Oil — Bespoke wellness, delivered to your residence, hotel or condominium"></div>
     </div>
 
-    <div class="hc-slide" data-index="1">
-      <div class="hc-backdrop" style="background-image:url('images/sanctuary-treatment-suite.png');"></div>
-      <div class="hc-figure"><img src="images/sanctuary-treatment-suite.png" alt="Sanctuary Treatment Menu"></div>
-    </div>
-
-    <div class="hc-slide" data-index="2">
-      <div class="hc-backdrop" style="background-image:url('images/sanctuary-relaxation-lounge.png');"></div>
-      <div class="hc-figure"><img src="images/sanctuary-relaxation-lounge.png" alt="Sanctuary Relaxation Lounge Menu"></div>
-    </div>
 
     <div class="hero-vignette"></div>
-    <div class="scroll-cue">Scroll to Explore</div>
+    <div class="scroll-cue">Discover More</div>
 
     <div class="hero-cta-row">
-      <a href="#massages" class="btn-reserve">Explore Menu</a>
-      <a href="#reserve" class="btn-outline">Reserve a Ritual</a>
+      <a href="#massages" class="btn-reserve">Discover the Menu</a>
+      <a href="#reserve" class="btn-outline">Reserve Your Session</a>
     </div>
 
     <button class="hc-arrow prev" aria-label="Previous slide">
@@ -482,17 +706,17 @@
   <!-- Feature Bar -->
   <div class="feature-bar">
     <div class="feature-grid">
-      <div class="feature-item"><h4>Organic Essences</h4><p>100% Cold-Pressed</p></div>
-      <div class="feature-item"><h4>Master Therapists</h4><p>Bespoke Techniques</p></div>
-      <div class="feature-item"><h4>Private Suites</h4><p>Acoustic Isolation</p></div>
+      <div class="feature-item"><h4>Pure Botanical Essences</h4><p>Cold-Pressed &amp; Organic</p></div>
+      <div class="feature-item"><h4>Master Therapists</h4><p>Tailored to You</p></div>
+      <div class="feature-item"><h4>Delivered to Your Door</h4><p>Residence &middot; Hotel &middot; Condominium</p></div>
     </div>
   </div>
 
   <!-- Expanded Service Menu Section -->
   <section class="services-section">
     <div class="section-title-wrap reveal">
-      <h2>The Service Menu</h2>
-      <p>Every session includes a sensory aroma ritual, hot herbal compresses, and private post-treatment tea tasting.</p>
+      <h2>The Treatment Menu</h2>
+      <p>We bring the sanctuary to you. Every visit is prepared with care: a curated aromatic ritual, warm herbal compresses and pure botanical oils, arranged in the privacy of your residence, hotel suite or condominium.</p>
     </div>
 
     <!-- 1. MASSAGE THERAPIES -->
@@ -502,32 +726,32 @@
         <div class="card-img-box"><img src="images/lotus-signature-flow.png" alt="Lotus Signature Massage" loading="lazy"></div>
         <div class="card-content">
           <h3>Lotus Signature Flow</h3>
-          <p>Full-body rhythmic therapy utilizing warm lotus-infused seed oil to restore fluid energy dynamics and melt chronic fatigue.</p>
-          <div class="card-meta"><span class="price">₱3,800</span><span class="duration">60 Mins</span></div>
+          <p>A flowing full-body massage with warm, lotus-infused seed oil, designed to restore balance and release deep-seated fatigue.</p>
+          <div class="card-meta"><span class="price">₱1,500</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/deep-kinetic-release.png" alt="Deep Kinetic Bodywork" loading="lazy"></div>
         <div class="card-content">
           <h3>Deep Kinetic Release</h3>
-          <p>Targeted deep-tissue manipulation combined with organic arnica and eucalyptus essences for muscular alignment.</p>
-          <div class="card-meta"><span class="price">₱4,600</span><span class="duration">75 Mins</span></div>
+          <p>Precise deep-tissue work, complemented by organic arnica and eucalyptus, to ease tension and restore muscular harmony.</p>
+          <div class="card-meta"><span class="price">₱1,700</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/warm-basalt-thermal.png" alt="Warm Basalt Ritual" loading="lazy"></div>
         <div class="card-content">
           <h3>Warm Basalt Thermal</h3>
-          <p>Volcanic stones radiate soft heat into deep muscle layers, complemented by cedarwood and bergamot aromatherapy.</p>
-          <div class="card-meta"><span class="price">₱5,200</span><span class="duration">90 Mins</span></div>
+          <p>Smooth volcanic stones release gentle, penetrating warmth into the muscles, accompanied by the soothing aromas of cedarwood and bergamot.</p>
+          <div class="card-meta"><span class="price">₱2,000</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/acoustic-sound-resonance.png" alt="Acoustic Sound Resonance" loading="lazy"></div>
         <div class="card-content">
           <h3>Acoustic Sound Resonance</h3>
-          <p>Tibetan singing bowl vibrations combined with gentle spinal presswork to induce deep meditative theta states.</p>
-          <div class="card-meta"><span class="price">₱4,800</span><span class="duration">75 Mins</span></div>
+          <p>The resonant tones of Tibetan singing bowls, paired with gentle pressure along the spine, guide you into a state of profound calm.</p>
+          <div class="card-meta"><span class="price">₱1,800</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
     </div>
@@ -539,92 +763,139 @@
         <div class="card-img-box"><img src="images/blue-tansy-sculpting.png" alt="Blue Tansy Radiance Facial" loading="lazy"></div>
         <div class="card-content">
           <h3>Blue Tansy Sculpting</h3>
-          <p>Manual lymphatic facial massage incorporating cold-pressed rosehip and blue tansy oils to restore youthful radiance.</p>
-          <div class="card-meta"><span class="price">₱3,900</span><span class="duration">60 Mins</span></div>
+          <p>A lymphatic facial massage with cold-pressed rosehip and blue tansy oils, revealing a refined and radiant complexion.</p>
+          <div class="card-meta"><span class="price">₱2,200</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/jade-gua-sha-contour.png" alt="Jade Gua Sha Sculpting" loading="lazy"></div>
         <div class="card-content">
           <h3>Jade Gua Sha Contour</h3>
-          <p>Ancient stone shaping techniques release jawline tension, encouraging natural collagen production and cellular drainage.</p>
-          <div class="card-meta"><span class="price">₱4,500</span><span class="duration">75 Mins</span></div>
+          <p>Traditional jade sculpting techniques release tension in the jaw and face, promoting gentle lymphatic drainage and a naturally lifted contour.</p>
+          <div class="card-meta"><span class="price">₱2,300</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/lotus-bio-enzyme-dew.png" alt="Lotus Bio-Enzyme Dew" loading="lazy"></div>
         <div class="card-content">
           <h3>Lotus Bio-Enzyme Dew</h3>
-          <p>Gentle botanical exfoliation paired with an intensive hyaluronic infusion for immediate hydration and glow.</p>
-          <div class="card-meta"><span class="price">₱4,300</span><span class="duration">60 Mins</span></div>
+          <p>A delicate botanical exfoliation followed by an intensive hyaluronic infusion, leaving the skin deeply hydrated and luminous.</p>
+          <div class="card-meta"><span class="price">₱2,400</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/24k-gold-luminescence.png" alt="24K Gold Luminescence Facial" loading="lazy"></div>
         <div class="card-content">
           <h3>24K Gold Luminescence</h3>
-          <p>Ultra-luxurious treatment utilizing pure 24K gold foil and micro-current therapy to firm, lift, and brighten skin cells.</p>
-          <div class="card-meta"><span class="price">₱6,500</span><span class="duration">90 Mins</span></div>
+          <p>Our most indulgent facial, featuring pure 24K gold foil and micro-current therapy to firm, lift and illuminate the complexion.</p>
+          <div class="card-meta"><span class="price">₱3,200</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
     </div>
 
     <!-- 3. BODY & SKIN POLISHING -->
-    <h3 class="category-title reveal" id="body">Body Polishing &amp; Wraps</h3>
+    <h3 class="category-title reveal" id="body">Body Rituals &amp; Wraps</h3>
     <div class="treatment-grid">
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/botanical-salt-pearl-scrub.png" alt="Botanical Salt Exfoliation" loading="lazy"></div>
         <div class="card-content">
           <h3>Botanical Salt &amp; Pearl Scrub</h3>
-          <p>Mineral-rich Pink Himalayan salts crushed with freshwater pearl powder and sweet almond oil to polish dull skin texture.</p>
-          <div class="card-meta"><span class="price">₱3,600</span><span class="duration">45 Mins</span></div>
+          <p>Mineral-rich Himalayan pink salt, freshwater pearl powder and sweet almond oil gently refine the skin, leaving it silky and luminous.</p>
+          <div class="card-meta"><span class="price">₱2,000</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
       <div class="treatment-card reveal">
         <div class="card-img-box"><img src="images/wild-thanaka-honey-cocoon.png" alt="Wild Thanaka Wrap" loading="lazy"></div>
         <div class="card-content">
           <h3>Wild Thanaka &amp; Honey Cocoon</h3>
-          <p>Nourishing bark paste wrap blended with raw wildflower honey and warm coconut milk to deeply repair sun-exposed skin.</p>
-          <div class="card-meta"><span class="price">₱4,200</span><span class="duration">60 Mins</span></div>
+          <p>A nourishing wrap of thanaka bark, raw wildflower honey and warm coconut milk, to soothe and restore sun-exposed skin.</p>
+          <div class="card-meta"><span class="price">₱2,200</span><span class="duration">60 Mins</span></div>
         </div>
       </div>
     </div>
 
-    <!-- 4. HYDROTHERAPY & THERMAL -->
-    <h3 class="category-title reveal" id="thermal">Hydrotherapy &amp; Thermal</h3>
-    <div class="treatment-grid">
-      <div class="treatment-card reveal">
-        <div class="card-img-box"><img src="images/mineral-herbal-soaking-bath.png" alt="Mineral Bath Ritual" loading="lazy"></div>
-        <div class="card-content">
-          <h3>Mineral Herbal Soaking Bath</h3>
-          <p>Private carved stone bath infused with magnesium salts, dried lotus petals, and fresh botanical hydrosols.</p>
-          <div class="card-meta"><span class="price">₱2,800</span><span class="duration">45 Mins</span></div>
-        </div>
+  </section>
+
+  <!-- Service Area -->
+  <section class="area-section" id="areas">
+    <div class="section-title-wrap reveal">
+      <h2>Where We Serve You</h2>
+      <p>Wherever you are staying, we bring the complete Lotus &amp; Oil experience to your door. Select a city or hotel to view our coverage.</p>
+    </div>
+    <div class="reveal">
+      <div class="area-tabs" id="areaTabs" role="tablist" aria-label="Coverage type">
+        <button type="button" role="tab" data-mode="cities" aria-selected="true">Cities</button>
+        <button type="button" role="tab" data-mode="hotels" aria-selected="false">Hotels &amp; Resorts</button>
       </div>
-      <div class="treatment-card reveal">
-        <div class="card-img-box"><img src="images/infrared-steam-detox-sauna.png" alt="Infrared Herbal Steam" loading="lazy"></div>
-        <div class="card-content">
-          <h3>Infrared Steam &amp; Detox Sauna</h3>
-          <p>Deep-penetrating infrared therapy paired with steam infused with lemongrass, eucalyptus, and organic ginger root.</p>
-          <div class="card-meta"><span class="price">₱3,200</span><span class="duration">45 Mins</span></div>
-        </div>
+      <div class="area-grid" id="areaGrid" role="group" aria-label="Choose an area to view on the map"></div>
+      <div class="map-wrap">
+        <div id="coverageMap" role="region" aria-label="Map of the Lotus &amp; Oil service area"></div>
       </div>
+      <p class="map-label" id="mapLabel"></p>
+      <p class="area-note">We attend private residences, hotel suites and condominium units. Do not see your location? Send us your address or hotel name and we will gladly confirm availability.</p>
     </div>
   </section>
 
-  <!-- Sanctuary Showcase -->
-  <section class="showcase-section" id="sanctuary">
+  <!-- Testimonials -->
+  <!-- NOTE: the reviews below are SAMPLE text. Replace them with real guest reviews (with permission) before going live. -->
+  <section class="reviews-section" id="reviews">
     <div class="section-title-wrap reveal">
-      <h2>The Sanctuary Awaits</h2>
-      <p>Every ritual and every room, curated for rejuvenation, restoration, and reconnection.</p>
+      <h2>Words From Our Guests</h2>
+      <p>Kind words from guests we have had the pleasure of serving in their homes, hotels and condominiums.</p>
     </div>
-    <div class="showcase-grid">
-      <div class="showcase-panel reveal">
-        <img src="images/sanctuary-treatment-suite.png" alt="Sanctuary Treatment Menu" loading="lazy">
+    <div class="t-carousel reveal" id="tCarousel" role="region" aria-roledescription="carousel" aria-label="Guest testimonials">
+      <div class="t-viewport" id="tViewport" tabindex="0">
+        <div class="t-track" id="tTrack" aria-live="off">
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="1 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">The Lotus Signature Flow was precisely what I needed after a demanding week. My therapist arrived on time, prepared everything with care, and I drifted to sleep before the hour had ended.</blockquote>
+            <figcaption><div class="t-author">Maria S.</div><div class="t-meta">Lotus Signature Flow · Makati</div></figcaption>
+          </figure>
+        </div>
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="2 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">I reserved a session in my hotel suite after a long flight. The service was punctual, discreet and impeccably professional, and the room was beautifully scented. I slept deeply that night.</blockquote>
+            <figcaption><div class="t-author">Daniel R.</div><div class="t-meta">Deep Kinetic Release · Pasay</div></figcaption>
+          </figure>
+        </div>
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="3 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">My skin glowed for days after the 24K Gold Luminescence facial. It felt every bit like a luxury spa experience, delivered to my home.</blockquote>
+            <figcaption><div class="t-author">Camille T.</div><div class="t-meta">24K Gold Luminescence · BGC</div></figcaption>
+          </figure>
+        </div>
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="4 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">The warmth of the stones and the scent of cedarwood were simply exquisite. I have since booked a session for my mother, who enjoyed it just as much.</blockquote>
+            <figcaption><div class="t-author">Angela M.</div><div class="t-meta">Warm Basalt Thermal · Parañaque</div></figcaption>
+          </figure>
+        </div>
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="5 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">The singing bowls made for a truly singular experience. Serene, considered and thoughtful from beginning to end.</blockquote>
+            <figcaption><div class="t-author">James L.</div><div class="t-meta">Acoustic Sound Resonance · Malate</div></figcaption>
+          </figure>
+        </div>
+        <div class="t-slide" role="group" aria-roledescription="slide" aria-label="6 of 6">
+          <figure class="t-card" style="margin:0">
+            <div class="t-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></div>
+            <blockquote class="t-text" style="margin:0 0 26px">The thanaka and honey wrap was wonderfully nourishing. Booking was effortless, and the team was warm and courteous throughout.</blockquote>
+            <figcaption><div class="t-author">Trisha V.</div><div class="t-meta">Wild Thanaka &amp; Honey Cocoon · Alabang</div></figcaption>
+          </figure>
+        </div>
+        </div>
       </div>
-      <div class="showcase-panel reveal">
-        <img src="images/sanctuary-relaxation-lounge.png" alt="Sanctuary Relaxation Lounge Menu" loading="lazy">
+      <div class="t-controls">
+        <button type="button" class="t-arrow" id="tPrev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="t-dots" id="tDots"></div>
+        <button type="button" class="t-arrow" id="tNext" aria-label="Next testimonial"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
+      <div class="t-progress" aria-hidden="true"><i id="tProg"></i></div>
     </div>
   </section>
 
@@ -632,8 +903,8 @@
   <section class="quote-section">
     <div class="quote-box reveal">
       <span class="quote-mark">"</span>
-      <div class="quote-body">"Lotus &amp; Oil reimagines modern wellness. It is a quiet oasis where craftsmanship and pure botanical science seamlessly converge."</div>
-      <div class="quote-author">— Vogue Living Wellness Review</div>
+      <div class="quote-body">"Lotus &amp; Oil is a quiet oasis, where refined craftsmanship and pure botanical science meet to restore body and spirit."</div>
+      <div class="quote-author">— The Lotus &amp; Oil Philosophy</div>
     </div>
   </section>
 
@@ -650,32 +921,44 @@
         </svg>
         <div>
           <h3>Lotus &amp; Oil</h3>
-          <p>A quiet urban refuge combining holistic kinetic bodywork with organic botanical essences.</p>
+          <p>Refined bodywork and pure botanical essences, brought with care to your residence, hotel or condominium.</p>
+          <!-- TODO: replace the three URLs below with your real Facebook, TikTok and Instagram pages -->
+          <div class="social-row" aria-label="Follow Lotus &amp; Oil">
+            <a class="social-link" href="https://www.facebook.com/lotusandoil" target="_blank" rel="noopener" aria-label="Lotus &amp; Oil on Facebook" title="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M14 21v-8h2.6l.5-3.2H14V7.7c0-.9.4-1.6 1.7-1.6h1.5V3.3c-.3 0-1.3-.2-2.3-.2-2.4 0-4 1.4-4 4.1v2.6H8.3V13H11v8z"/></svg>
+            </a>
+            <a class="social-link" href="https://www.tiktok.com/@lotusandoil" target="_blank" rel="noopener" aria-label="Lotus &amp; Oil on TikTok" title="TikTok">
+              <svg viewBox="0 0 24 24"><path d="M14.5 3.5v10.2a3.9 3.9 0 1 1-3.9-3.9"/><path d="M14.5 3.5c.3 2.4 1.9 4.1 4.5 4.3"/></svg>
+            </a>
+            <a class="social-link" href="https://www.instagram.com/lotusandoil" target="_blank" rel="noopener" aria-label="Lotus &amp; Oil on Instagram" title="Instagram">
+              <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.9"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
+            </a>
+          </div>
         </div>
       </div>
       <div class="footer-col">
         <h4>Menu</h4>
         <ul class="footer-links">
-          <li><a href="#massages">Massage Rituals</a></li>
-          <li><a href="#facials">Facial Sculpting</a></li>
-          <li><a href="#body">Body Polishing</a></li>
-          <li><a href="#thermal">Hydrotherapy</a></li>
+          <li><a href="#massages">Massage Therapies</a></li>
+          <li><a href="#facials">Facial Rituals</a></li>
+          <li><a href="#body">Body Rituals</a></li>
+          <li><a href="#areas">Service Coverage</a></li>
+          <li><a href="#reviews">Guest Reviews</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Sanctuary Hours</h4>
-        <p class="footer-info-p"><strong>Mon – Fri:</strong><br>10:00 AM – 10:00 PM</p>
-        <p class="footer-info-p"><strong>Sat – Sun:</strong><br>09:00 AM – 11:00 PM</p>
+        <h4>Service Hours</h4>
+        <p class="footer-info-p"><strong>Available 24/7</strong><br>Every day, around the clock</p>
       </div>
       <div class="footer-col">
         <h4>Concierge</h4>
-        <p class="footer-info-p">5th Avenue Corner 28th Street<br>Bonifacio Global City, Manila</p>
+        <p class="footer-info-p">Residence, hotel &amp; condominium service<br>Throughout Metro Manila</p>
         <p class="footer-info-p">concierge@lotusandoil.com</p>
         <p class="footer-info-p">+63 (2) 8812 3456</p>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Lotus &amp; Oil Sanctuary. All rights reserved.</span>
+      <span>© 2026 Lotus &amp; Oil. All rights reserved.</span>
       <div class="legal-links">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
@@ -683,6 +966,385 @@
       </div>
     </div>
   </footer>
+
+  <!-- Booking dialog -->
+  <dialog class="book-dialog" id="bookDialog" aria-labelledby="bkTitle">
+    <div class="bk-inner">
+      <h3 id="bkTitle">Reserve Your Session</h3>
+      <p class="bk-sub" id="bkSub"></p>
+      <ul class="bk-summary" id="bkSummary"></ul>
+      <form id="bkForm">
+        <div class="bk-grid">
+          <label class="full">Full name<input type="text" name="name" required autocomplete="name"></label>
+          <label class="full">Mobile number<input type="tel" name="phone" required autocomplete="tel" inputmode="tel"></label>
+          <label>Preferred date<input type="date" name="date" id="bkDate" required></label>
+          <label>Preferred time<input type="time" name="time" required></label>
+          <label class="full">Service location
+            <select name="venue" required>
+              <option value="Home">Home</option>
+              <option value="Hotel">Hotel</option>
+              <option value="Condominium">Condominium</option>
+            </select>
+          </label>
+          <label class="full">Address, or hotel and room number<textarea name="address" required></textarea></label>
+        </div>
+        <div class="bk-actions">
+          <button type="button" class="bk-cancel" id="bkCancel">Cancel</button>
+          <button type="submit" class="btn-book">Send Booking Request</button>
+        </div>
+        <p class="bk-note">Your request opens in your email app, addressed to our concierge. We will confirm your booking shortly.</p>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const $ = (s, r = document) => r.querySelector(s);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const money = n => "\u20b1" + Math.round(n).toLocaleString();
+
+    /* ============ Add-ons, guests, live total & booking ============ */
+    const ADDONS = [
+      { id: "oil", name: "Premium Botanical Oil", price: 150, blurb: "Therapeutic-grade essential oils" },
+      { id: "ear", name: "Ear Candling", price: 150, blurb: "A gentle, traditional ritual" },
+      { id: "scrub", name: "Body Scrub", price: 800, blurb: "A refining exfoliation for the body" },
+      { id: "scalp", name: "Scalp Massage", price: 200, blurb: "Fifteen minutes for the head and neck" },
+      { id: "stone", name: "Hot Stone", price: 600, blurb: "Warm aromatic towel treatment" },
+      { id: "ventosa", name: "Ventosa Therapy", price: 500, blurb: "Traditional cupping therapy" }
+    ];
+
+    /* Session lengths. Every treatment starts at 60 minutes; longer sessions are priced from the 60-minute rate. */
+    const DURS = [
+      { label: "60 Mins", mult: 1 },
+      { label: "120 Mins", mult: 1.9 },
+      { label: "180 Mins", mult: 2.7 }
+    ];
+    const priceFor = (base60, d) => Math.round(base60 * d.mult / 50) * 50;
+    const MAX_GUESTS = 6, CONCIERGE_EMAIL = "concierge@lotusandoil.com";
+    const dlg = $("#bookDialog"), bkSummary = $("#bkSummary"), bkSub = $("#bkSub"), bkForm = $("#bkForm");
+    let booking = null;
+
+    document.querySelectorAll(".treatment-card").forEach(card => {
+      const meta = $(".card-meta", card);
+      const svc = $("h3", card).textContent.trim();
+      const priceEl = $(".price", card), durEl = $(".duration", card);
+      const base60 = parseInt(priceEl.textContent.replace(/\D/g, ""), 10);
+      let durIdx = 0;
+      const baseNow = () => priceFor(base60, DURS[durIdx]);
+      const prev = card.parentElement.previousElementSibling;
+      const hasAddons = !!prev && prev.id === "massages";   /* add-ons are offered on massage therapies */
+
+      const wrap = document.createElement("div");
+      wrap.innerHTML = `
+        <div class="dur-row"><span>Session length</span>
+          <div class="dur-opts" role="group" aria-label="Session length">${DURS.map((d, i) => `<button type="button" data-dur="${i}" aria-pressed="${i === 0}">${d.label}</button>`).join("")}</div>
+        </div>` + (hasAddons ? `
+        <details class="addons"><summary>Add-Ons <em data-addon-count>(optional)</em></summary>
+          <div class="addon-list">${ADDONS.map(a => `<button type="button" class="addon" data-id="${a.id}" aria-pressed="false"><span class="addon-check" aria-hidden="true">&#10003;</span><span class="addon-info"><b>${a.name}</b><small>${a.blurb}</small></span><span class="addon-price">+${money(a.price)}</span></button>`).join("")}</div>
+        </details>` : "") + `
+        <div class="guest-row"><span>Guests</span>
+          <div class="stepper"><button type="button" data-step="-1" aria-label="Fewer guests">&minus;</button><output data-guests aria-live="polite">1</output><button type="button" data-step="1" aria-label="More guests">+</button></div>
+        </div>
+        <p class="svc-total" data-total></p>`;
+      meta.before(...wrap.children);
+      const book = document.createElement("button");
+      book.type = "button"; book.className = "btn-book"; book.textContent = "Book This Treatment";
+      meta.after(book);
+
+      const sel = new Set();
+      let guests = 1;
+      const count = $("[data-addon-count]", card), total = $("[data-total]", card), out = $("[data-guests]", card);
+      const minus = $('[data-step="-1"]', card), plus = $('[data-step="1"]', card);
+
+      function calc() {
+        const chosen = ADDONS.filter(a => sel.has(a.id));
+        const add = chosen.reduce((n, a) => n + a.price, 0), base = baseNow();
+        return { chosen, add, per: base + add, sum: (base + add) * guests };
+      }
+      function update() {
+        const c = calc();
+        out.textContent = guests;
+        minus.disabled = guests <= 1; plus.disabled = guests >= MAX_GUESTS;
+        if (count) count.textContent = sel.size ? `(${sel.size} selected)` : "(optional)";
+        priceEl.textContent = money(baseNow()); durEl.textContent = DURS[durIdx].label;
+        card.querySelectorAll("[data-dur]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.dur === durIdx));
+        const parts = [];
+        if (c.add) parts.push(`session ${money(baseNow())} + add-ons ${money(c.add)}`);
+        if (guests > 1) parts.push(`${money(c.per)} \u00d7 ${guests} guests`);
+        total.innerHTML = `Total <b>${money(c.sum)}</b>${parts.length ? parts.join(" &middot; ") : "per guest, per session"}`;
+      }
+      card.querySelectorAll(".addon").forEach(btn => btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        sel.has(id) ? sel.delete(id) : sel.add(id);
+        btn.setAttribute("aria-pressed", sel.has(id));
+        update();
+      }));
+      card.querySelectorAll("[data-dur]").forEach(b => b.addEventListener("click", () => { durIdx = +b.dataset.dur; update(); }));
+      minus.addEventListener("click", () => { guests = Math.max(1, guests - 1); update(); });
+      plus.addEventListener("click", () => { guests = Math.min(MAX_GUESTS, guests + 1); update(); });
+      book.addEventListener("click", () => openBooking({ svc, dur: DURS[durIdx].label, base: baseNow(), guests, ...calc() }));
+      update();
+    });
+
+    function openBooking(b) {
+      booking = b;
+      bkSub.textContent = `${b.svc} \u00b7 ${b.dur}`;
+      bkSummary.innerHTML =
+        `<li><span>${b.svc} (${b.dur})</span><b>${money(b.base)}</b></li>` +
+        b.chosen.map(a => `<li><span>${a.name}</span><b>+${money(a.price)}</b></li>`).join("") +
+        (b.guests > 1 ? `<li><span>Guests</span><b>\u00d7 ${b.guests}</b></li>` : "") +
+        `<li class="bk-total"><span>Total</span><b>${money(b.sum)}</b></li>`;
+      const d = new Date(), iso = new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      $("#bkDate").min = iso;
+      dlg.showModal();
+    }
+    $("#bkCancel").addEventListener("click", () => dlg.close());
+    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+    bkForm.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!booking) return;
+      const f = new FormData(bkForm), b = booking;
+      const lines = [
+        "Hello Lotus & Oil,", "", "I would like to reserve the following:", "",
+        `Treatment: ${b.svc} (${b.dur})`,
+        `Add-ons: ${b.chosen.length ? b.chosen.map(a => `${a.name} (+${money(a.price)})`).join(", ") : "None"}`,
+        `Guests: ${b.guests}`,
+        `Estimated total: ${money(b.sum)}`, "",
+        `Name: ${f.get("name")}`,
+        `Mobile: ${f.get("phone")}`,
+        `Preferred date: ${f.get("date")}`,
+        `Preferred time: ${f.get("time")}`,
+        `Location type: ${f.get("venue")}`,
+        `Address / hotel & room: ${f.get("address")}`, "", "Thank you."
+      ];
+      location.href = `mailto:${CONCIERGE_EMAIL}?subject=${encodeURIComponent("Booking Request: " + b.svc)}&body=${encodeURIComponent(lines.join("\n"))}`;
+      dlg.close();
+    });
+
+    /* ============ Service area map: cities + hotels (Leaflet + OpenStreetMap) ============ */
+    (function coverageMap() {
+      const grid = $("#areaGrid"), tabs = $("#areaTabs"), box = $("#coverageMap"), label = $("#mapLabel");
+      const gLink = (place, metro = true) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place + (metro ? ", Metro Manila" : "") + ", Philippines")}`;
+      if (!window.L) { label.innerHTML = `The map is currently unavailable. <a href="${gLink("Metro Manila")}" target="_blank" rel="noopener">View in Google Maps</a>`; return; }
+
+      /* Cities (outlined with real boundaries from OpenStreetMap when available) */
+      const GEO = {
+        "Alabang":      { q: "Alabang, Muntinlupa, Philippines",           c: [14.4180, 121.0400], r: 2600 },
+        "Quezon City":  { q: "Quezon City, Metro Manila, Philippines",     c: [14.6760, 121.0437], r: 6500 },
+        "Makati":       { q: "Makati, Metro Manila, Philippines",          c: [14.5547, 121.0244], r: 3200 },
+        "Pasay":        { q: "Pasay, Metro Manila, Philippines",           c: [14.5378, 121.0014], r: 3200 },
+        "Malate":       { q: "Malate, Manila, Philippines",                c: [14.5700, 120.9930], r: 1500 },
+        "Taguig (BGC)": { q: "Bonifacio Global City, Taguig, Philippines", c: [14.5500, 121.0480], r: 1600 },
+        "Parañaque":    { q: "Parañaque, Metro Manila, Philippines",       c: [14.4793, 121.0198], r: 4200 },
+        "Santa Ana":    { q: "Santa Ana, Manila, Philippines",             c: [14.5810, 121.0110], r: 1600 },
+        "San Andres":   { q: "San Andres Bukid, Manila, Philippines",      c: [14.5720, 121.0000], r: 1500 }
+      };
+
+      /* Hotels & resorts near our service areas. Pins are approximate (about 300 m). */
+      const HOTELS = [
+        { name: "Okada Manila",          area: "Parañaque",    q: "Okada Manila, Parañaque",                      c: [14.5170, 120.9840], r: 380 },
+        { name: "Solaire Resort",        area: "Parañaque",    q: "Solaire Resort Entertainment City, Parañaque", c: [14.5240, 120.9830], r: 380 },
+        { name: "City of Dreams",        area: "Parañaque",    q: "City of Dreams Manila, Parañaque",             c: [14.5262, 120.9858], r: 380 },
+        { name: "Newport World Resorts", area: "Pasay",        q: "Newport World Resorts, Pasay",                 c: [14.5185, 121.0190], r: 450 },
+        { name: "Conrad Manila",         area: "Pasay",        q: "Conrad Manila, Pasay",                         c: [14.5350, 120.9825], r: 300 },
+        { name: "Sofitel Manila",        area: "Pasay",        q: "Sofitel Philippine Plaza Manila, Pasay",       c: [14.5550, 120.9800], r: 400 },
+        { name: "Diamond Hotel",         area: "Malate",       q: "Diamond Hotel Philippines, Malate, Manila",    c: [14.5730, 120.9790], r: 300 },
+        { name: "Shangri-La Makati",     area: "Makati",       q: "Makati Shangri-La Manila",                     c: [14.5522, 121.0210], r: 300 },
+        { name: "Raffles & Fairmont",    area: "Makati",       q: "Raffles and Fairmont Makati",                  c: [14.5497, 121.0262], r: 300 },
+        { name: "Shangri-La The Fort",   area: "Taguig (BGC)", q: "Shangri-La The Fort, Bonifacio Global City",   c: [14.5505, 121.0455], r: 300 },
+        { name: "Grand Hyatt Manila",    area: "Taguig (BGC)", q: "Grand Hyatt Manila, Bonifacio Global City",    c: [14.5503, 121.0495], r: 300 },
+        { name: "Novotel Araneta",       area: "Quezon City",  q: "Novotel Manila Araneta City, Quezon City",     c: [14.6212, 121.0535], r: 300 },
+        { name: "Seda Vertis North",     area: "Quezon City",  q: "Seda Vertis North, Quezon City",               c: [14.6560, 121.0310], r: 300 },
+        { name: "Acacia Hotel Manila",   area: "Alabang",      q: "Acacia Hotel Manila, Alabang, Muntinlupa",     c: [14.4155, 121.0400], r: 400 }
+      ];
+
+      const RED = "#d7263d";
+      const map = L.map(box, { zoomControl: true, scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false, zoomSnap: 0.25 }).setView([14.55, 121.02], 11);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors", maxZoom: 19
+      }).addTo(map);
+      const layer = L.layerGroup().addTo(map);
+      const motion = !reduceMotion;
+
+      /* city boundary cache (memory + localStorage) and a polite 1 request/second queue for Nominatim */
+      const KEY = "lotus-geo-v1";
+      let cache = {}; try { cache = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+      const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch (e) {} };
+      const pending = {}; let chain = Promise.resolve();
+      function load(name) {
+        if (cache[name]) return Promise.resolve(cache[name]);
+        if (pending[name]) return pending[name];
+        const g = GEO[name];
+        return pending[name] = chain = chain.then(() => new Promise(r => setTimeout(r, 1100))).then(async () => {
+          try {
+            const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&polygon_geojson=1&polygon_threshold=0.0004&countrycodes=ph&q=" + encodeURIComponent(g.q);
+            const res = await (await fetch(url, { headers: { Accept: "application/json" } })).json();
+            const hit = res && res[0];
+            if (hit && hit.geojson && /Polygon/.test(hit.geojson.type) && Math.abs(hit.lat - g.c[0]) < 0.25 && Math.abs(hit.lon - g.c[1]) < 0.25) {
+              cache[name] = hit.geojson; save(); return hit.geojson;
+            }
+          } catch (e) {}
+          return null;
+        });
+      }
+
+      const style = sel => ({ color: RED, weight: sel ? 5 : 4, opacity: 1, fillColor: RED, fillOpacity: .14, className: "cov-poly" });
+      const fit = (bounds, pad, maxZoom) => {
+        const o = { padding: [pad, pad], maxZoom: maxZoom || 15 };
+        motion ? map.flyToBounds(bounds, { ...o, duration: 1.3 }) : map.fitBounds(bounds, { ...o, animate: false });
+      };
+      const pulse = c => L.marker(c, { icon: L.divIcon({ className: "cov-pulse", html: "<i></i>", iconSize: [18, 18] }), interactive: false }).addTo(layer);
+      function setLabel(html) { label.style.opacity = 0; setTimeout(() => { label.innerHTML = html; label.style.opacity = 1; }, 150); }
+
+      /* ---- City view (original behaviour) ---- */
+      function drawCity(name, geom, withTip) {
+        const g = GEO[name]; let shape;
+        if (geom) shape = L.geoJSON(geom, { style: () => style(true) });
+        else shape = L.circle(g.c, { radius: g.r, ...style(true) });
+        shape.addTo(layer);
+        if (withTip) L.tooltip({ permanent: true, direction: "center", className: "cov-tip" }).setContent(name.replace(/\s*\(.*\)/, "")).setLatLng(g.c).addTo(layer);
+        return shape;
+      }
+      function drawAllCities() { const all = L.featureGroup(); Object.keys(GEO).forEach(n => all.addLayer(drawCity(n, cache[n] || null, true))); return all; }
+
+      function selectCity(i, my) {
+        const name = Object.keys(GEO)[i - 1];
+        if (i === 0) {
+          fit(drawAllCities().getBounds(), 24);
+          setLabel(`Our complete service area is outlined in red. Select an area to view it in detail. <a href="${gLink("Metro Manila")}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+          Object.keys(GEO).filter(n => !cache[n]).forEach(n => load(n).then(g => {
+            if (g && my === token) { layer.clearLayers(); drawAllCities(); }
+          }));
+          return;
+        }
+        const g = GEO[name];
+        const shape = drawCity(name, cache[name] || null, true);
+        pulse(g.c);
+        fit(shape.getBounds(), 28);
+        setLabel(`<strong>${name}</strong> is within our service area, outlined in red. <a href="${gLink(name.replace(/\s*\(.*\)/, ""))}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+        if (!cache[name]) load(name).then(geom => {
+          if (!geom || my !== token) return;
+          layer.clearLayers();
+          const poly = drawCity(name, geom, true);
+          pulse(g.c);
+          fit(poly.getBounds(), 28);
+        });
+      }
+
+      /* ---- Hotel view ---- */
+      function selectHotel(i) {
+        if (i === 0) {
+          const all = L.featureGroup();
+          HOTELS.forEach((h, k) => {
+            const dot = L.circleMarker(h.c, { ...style(false), radius: 10, weight: 3 }).addTo(layer);
+            dot.bindTooltip(h.name, { direction: "top", className: "cov-tip" });
+            dot.on("click", () => select(k + 1));
+            all.addLayer(dot);
+          });
+          fit(all.getBounds(), 30, 12);
+          setLabel(`The hotels and resorts we serve are marked in red. Select a pin or hotel to view it closely. <a href="${gLink("hotels", true)}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+          return;
+        }
+        const h = HOTELS[i - 1];
+        const circle = L.circle(h.c, { ...style(true), radius: h.r }).addTo(layer);
+        L.tooltip({ permanent: true, direction: "top", offset: [0, -4], className: "cov-tip" }).setContent(h.name).setLatLng(h.c).addTo(layer);
+        pulse(h.c);
+        fit(circle.getBounds(), 40, 16);
+        setLabel(`<strong>${h.name}</strong> (${h.area}) is within our service area, outlined in red. <a href="${gLink(h.q, false)}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+      }
+
+      /* ---- Shared UI ---- */
+      let mode = "cities", token = 0;
+      const names = () => (mode === "cities" ? ["All areas", ...Object.keys(GEO)] : ["All hotels", ...HOTELS.map(h => h.name)]);
+
+      function buildButtons() {
+        grid.innerHTML = "";
+        names().forEach((n, i) => {
+          const b = document.createElement("button");
+          b.type = "button"; b.textContent = n; b.setAttribute("aria-pressed", "false");
+          b.addEventListener("click", () => select(i));
+          grid.appendChild(b);
+        });
+      }
+      function select(i) {
+        const my = ++token;
+        [...grid.children].forEach((b, k) => b.setAttribute("aria-pressed", k === i ? "true" : "false"));
+        layer.clearLayers();
+        mode === "cities" ? selectCity(i, my) : selectHotel(i);
+      }
+      tabs.querySelectorAll("button").forEach(t => t.addEventListener("click", () => {
+        mode = t.dataset.mode;
+        tabs.querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+        buildButtons(); select(0);
+      }));
+
+      buildButtons();
+      select(0);
+    })();
+    /* ============ Testimonials carousel ============ */
+    (function testimonials() {
+      const root = $("#tCarousel"); if (!root) return;
+      const track = $("#tTrack"), view = $("#tViewport"), dotsWrap = $("#tDots"), prog = $("#tProg");
+      const slides = [...track.children], DUR = 7000;
+      let cur = 0, timer = null, hold = false;
+      root.style.setProperty("--t-dur", DUR + "ms");
+
+      slides.forEach((_, i) => {
+        const d = document.createElement("button");
+        d.type = "button"; d.className = "t-dot"; d.setAttribute("aria-label", "Show testimonial " + (i + 1));
+        d.addEventListener("click", () => go(i, true));
+        dotsWrap.appendChild(d);
+      });
+      const dots = [...dotsWrap.children];
+
+      function restartProgress() {
+        prog.classList.remove("run"); void prog.offsetWidth;
+        if (!reduceMotion && !hold) prog.classList.add("run");
+      }
+      function schedule() {
+        clearTimeout(timer);
+        if (reduceMotion || hold) return;
+        restartProgress();
+        timer = setTimeout(() => go(cur + 1), DUR);
+      }
+      function go(i, user) {
+        cur = (i + slides.length) % slides.length;
+        track.style.transform = `translateX(-${cur * 100}%)`;
+        slides.forEach((sl, k) => { sl.classList.toggle("is-active", k === cur); sl.setAttribute("aria-hidden", k === cur ? "false" : "true"); });
+        dots.forEach((d, k) => { d.classList.toggle("active", k === cur); k === cur ? d.setAttribute("aria-current", "true") : d.removeAttribute("aria-current"); });
+        schedule();
+      }
+      function pause() { hold = true; root.classList.add("paused"); clearTimeout(timer); }
+      function resume() { hold = false; root.classList.remove("paused"); schedule(); }
+
+      $("#tNext").addEventListener("click", () => go(cur + 1, true));
+      $("#tPrev").addEventListener("click", () => go(cur - 1, true));
+      root.addEventListener("mouseenter", pause);
+      root.addEventListener("mouseleave", resume);
+      view.addEventListener("focusin", pause);
+      view.addEventListener("focusout", resume);
+      view.addEventListener("keydown", e => {
+        if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1, true); }
+        if (e.key === "ArrowLeft")  { e.preventDefault(); go(cur - 1, true); }
+      });
+
+      /* swipe */
+      let x0 = null;
+      view.addEventListener("pointerdown", e => { x0 = e.clientX; });
+      view.addEventListener("pointerup", e => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1), true);
+      });
+      view.addEventListener("pointercancel", () => { x0 = null; });
+
+      /* only auto-advance while the section is on screen */
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(([en]) => { en.isIntersecting ? resume() : pause(); }, { threshold: 0.25 }).observe(root);
+      }
+      go(0);
+    })();
+  </script>
 
   <script>
     // Scroll reveal
